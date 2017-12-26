@@ -33,7 +33,7 @@ Semaphore的内容是由Edsger Dijkstra引入并在 THEOS操作系统上第一�
 
 当线程使用完共享资源时，他必须放出semaphore为了让其他线程可以访问共享资源。这个操作会增加semaphore的内部计数器的值。
 
-[示例](../src/test/java/com/getset/j7cc/chapter1/ThreadSyncUtilities.java#L14)使用Semaphore类来实现一种比较特殊的semaphores种类，称为binary semaphores。这个semaphores种类保护访问共享资源的独特性，所以semaphore的内部计数器的值只能是1或者0。为了展示如何使用它，你将要实现一个PrintQueue类来让并发任务打印它们的任务。这个PrintQueue类会受到binary semaphore的保护，所以每次只能有一个线程可以打印。
+[示例](../src/test/java/com/getset/j7cc/chapter3/ThreadSyncUtilities.java#L14)使用Semaphore类来实现一种比较特殊的semaphores种类，称为binary semaphores。这个semaphores种类保护访问共享资源的独特性，所以semaphore的内部计数器的值只能是1或者0。为了展示如何使用它，你将要实现一个PrintQueue类来让并发任务打印它们的任务。这个PrintQueue类会受到binary semaphore的保护，所以每次只能有一个线程可以打印。
 
 Semaphore类有另2个版本的 acquire() 方法：
 
@@ -44,7 +44,7 @@ Semaphore类有另2个版本的 acquire() 方法：
 
 上一节的binary semaphores是用来保护访问一个共享资源的，或者说一个代码片段每次只能被一个线程执行。但是semaphores也可以用来保护多个资源的副本，也就是说当你有一个代码片段每次可以被多个线程执行。
 
-这一节中我们使用semaphore来保护多个资源副本。[示例](../src/test/java/com/getset/j7cc/chapter1/ThreadSyncUtilities.java#L45)有一个print queue但可以在3个不同的打印机上打印文件。
+这一节中我们使用semaphore来保护多个资源副本。[示例](../src/test/java/com/getset/j7cc/chapter3/ThreadSyncUtilities.java#L45)有一个print queue但可以在3个不同的打印机上打印文件。
 
 The acquire(), acquireUninterruptibly(), tryAcquire(),和release()方法有一个外加的包含一个int参数的版本。这个参数表示 线程想要获取或者释放semaphore的许可数。也可以这样说，这个线程想要删除或者添加到semaphore的内部计数器的单位数量。在这个例子中acquire(), acquireUninterruptibly(), 和tryAcquire() 方法, 如果计数器的值小于许可值，那么线程就会被阻塞直到计数器到达或者大于许可值。
 
@@ -52,7 +52,7 @@ The acquire(), acquireUninterruptibly(), tryAcquire(),和release()方法有一�
 
 Java并发API提供这样的类，它允许1个或者多个线程一直等待，直到一组操作执行完成。 这个类就是CountDownLatch类。它初始一个整数值，此值是线程将要等待的操作数。当某个线程为了想要执行这些操作而等待时， 它要使用 await()方法。此方法让线程进入休眠直到操作完成。 当某个操作结束，它使用countDown() 方法来减少CountDownLatch类的内部计数器。当计数器到达0时，这个类会唤醒全部使用await() 方法休眠的线程们。
 
-[示例](../src/test/java/com/getset/j7cc/chapter1/ThreadSyncUtilities.java#L68)演示如何使用 CountDownLatch 类来实现 video-conference 系统。 video-conference 系统将等待全部参与者到达后才会开始。
+[示例](../src/test/java/com/getset/j7cc/chapter3/ThreadSyncUtilities.java#L68)演示如何使用 CountDownLatch 类来实现 video-conference 系统。 video-conference 系统将等待全部参与者到达后才会开始。
 
 CountDownLatch类有3个基本元素：
 
@@ -74,7 +74,7 @@ CyclicBarrier 类有一个整数初始值，此值表示将在同一点同步的
 
 CyclicBarrier 类有个有趣的优势是，你可以传递一个外加的 Runnable 对象作为初始参数，并且当全部线程都到达同一个点时，CyclicBarrier类 会把这个对象当做线程来执行。此特点让这个类在使用 divide 和 conquer 编程技术时，可以充分发挥任务的并行性，
 
-[示例](../src/test/java/com/getset/j7cc/chapter1/ThreadSyncUtilities.java#L82)使用 CyclicBarrier 类来让一组线程在一个确定点同步。并使用 Runnable 对象，在全部线程都到达确定点后被执行。在这个例子里，你将在数字矩阵中查找一个数字。矩阵会被分成多个子集（使用divide 和 conquer 技术），所以每个线程会在一个子集中查找那个数字。一旦全部行程运行结束，会有一个最终任务来统一他们的结果。
+[示例](../src/test/java/com/getset/j7cc/chapter3/ThreadSyncUtilities.java#L82)使用 CyclicBarrier 类来让一组线程在一个确定点同步。并使用 Runnable 对象，在全部线程都到达确定点后被执行。在这个例子里，你将在数字矩阵中查找一个数字。矩阵会被分成多个子集（使用divide 和 conquer 技术），所以每个线程会在一个子集中查找那个数字。一旦全部行程运行结束，会有一个最终任务来统一他们的结果。
 
 ## 3.6 运行并发阶段性任务
 
@@ -82,7 +82,7 @@ Java 并发 API 提供的一个非常复杂且强大的功能是，能够使用P
 
 相对于其他同步应用，我们必须初始化Phaser类与这次同步操作有关的任务数，我们可以通过增加或者减少来不断的改变这个数。
 
-[示例](../src/test/java/com/getset/j7cc/chapter1/ThreadSyncUtilities.java#L113)使用Phaser类来同步3个并发任务。这3个任务会在3个不同的文件夹和它们的子文件夹中搜索扩展名是.log并在24小时内修改过的文件。这个任务被分成3个步骤：
+[示例](../src/test/java/com/getset/j7cc/chapter3/ThreadSyncUtilities.java#L113)使用Phaser类来同步3个并发任务。这3个任务会在3个不同的文件夹和它们的子文件夹中搜索扩展名是.log并在24小时内修改过的文件。这个任务被分成3个步骤：
 
 
 The Phaser类还提供了其他相关方法来改变phase。他们是：
@@ -111,7 +111,7 @@ Phaser 类提供每次phaser改变阶段都会执行的方法。它是 onAdvance
 
 如果注册参与者为0，此方法的默认的实现值为真，要不然就是false。如果你扩展Phaser类并覆盖此方法，那么你可以修改它的行为。通常，当你要从一个phase到另一个，来执行一些行动时，你会对这么做感兴趣的。
 
-[示例](../src/test/java/com/getset/j7cc/chapter1/ThreadSyncUtilities.java#L145)演示如何控制phaser的 phase的改变，通过实现自定义版本的 Phaser类并覆盖 onAdvance() 方法来执行一些每个phase 都会改变的行动。你将要实现一个模拟测验，有些学生要完成他们的练习。全部的学生都必须完成同一个练习才能继续下一个练习。
+[示例](../src/test/java/com/getset/j7cc/chapter3/ThreadSyncUtilities.java#L145)演示如何控制phaser的 phase的改变，通过实现自定义版本的 Phaser类并覆盖 onAdvance() 方法来执行一些每个phase 都会改变的行动。你将要实现一个模拟测验，有些学生要完成他们的练习。全部的学生都必须完成同一个练习才能继续下一个练习。
 
 ## 3.8 在并发任务间交换数据
 
@@ -119,4 +119,4 @@ Java 并发 API 提供了一种允许2个并发任务间相互交换数据的同
 
 这个类在遇到类似生产者和消费者问题时，是非常有用的。来一个非常经典的并发问题：你有相同的数据buffer，一个或多个数据生产者，和一个或多个数据消费者。只是Exchange类只能同步2个线程，所以你只能在你的生产者和消费者问题中只有一个生产者和一个消费者时使用这个类。
 
-[示例](../src/test/java/com/getset/j7cc/chapter1/ThreadSyncUtilities.java#L182)演示如何使用 Exchanger 类来解决只有一个生产者和一个消费者的生产者和消费者问题。
+[示例](../src/test/java/com/getset/j7cc/chapter3/ThreadSyncUtilities.java#L182)演示如何使用 Exchanger 类来解决只有一个生产者和一个消费者的生产者和消费者问题。
